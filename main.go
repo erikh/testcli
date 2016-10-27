@@ -14,6 +14,7 @@ package testcli
 import (
 	"bytes"
 	"errors"
+	"io"
 	"log"
 	"os/exec"
 	"regexp"
@@ -28,6 +29,7 @@ type Cmd struct {
 	executed  bool
 	stdout    string
 	stderr    string
+	stdin     io.Reader
 }
 
 // ErrUninitializedCmd is returned when members are accessed before a run, that
@@ -48,8 +50,18 @@ func (c *Cmd) validate() {
 	}
 }
 
+// SetStdin sets the stdin stream. It makes no attempt to determine if the
+// command accepts anything over stdin.
+func (c *Cmd) SetStdin(stdin io.Reader) {
+	c.stdin = stdin
+}
+
 // Run runs the command.
 func (c *Cmd) Run() {
+	if c.stdin != nil {
+		c.cmd.Stdin = c.stdin
+	}
+
 	var outBuf bytes.Buffer
 	c.cmd.Stdout = &outBuf
 
