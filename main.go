@@ -46,6 +46,14 @@ func Command(name string, arg ...string) *Cmd {
 	}
 }
 
+// GoRun if a shortcut for Command("go", "run", ...)
+func GoRun(name string, arg ...string) *Cmd {
+	return Command("go", append([]string{"run", name}, arg...)...)
+}
+
+// GoRunMain if a shortcut for GoRun("go", "run", "main.go", ...)
+func GoRunMain(arg ...string) *Cmd { return GoRun("main.go", arg...) }
+
 func (c *Cmd) validate() {
 	if !c.executed {
 		log.Fatal(ErrUninitializedCmd)
