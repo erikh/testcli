@@ -213,3 +213,17 @@ func (c *Cmd) StderrMatches(regex string) bool {
 func StderrMatches(regex string) bool {
 	return pkgCmd.StderrMatches(regex)
 }
+
+func (c *Cmd) StdoutAndStderr() string {
+	return strings.Join(
+		[]string{
+			"--- begin stdout ---",
+			c.Stdout(),
+			"--- end stdout ---",
+			"--- begin stderr ---",
+			c.Stderr(),
+			"--- end stderr ---",
+		},
+		"\n",
+	)
+}
